@@ -1,2 +1,2 @@
-# University-Assistant
-
+# uni-assistant
+oshman :)
