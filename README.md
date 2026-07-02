@@ -92,6 +92,7 @@ UNI-ASSISTANT/
 │
 ├── .env
 ├── README.md
+├── requirements.txt
 │
 ├── code_pipeline/
 │   ├── graph.py
