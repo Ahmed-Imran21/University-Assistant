@@ -2,11 +2,11 @@
 
 ## Project Overview
 
-The **University Assistant** is an intelligent AI-powered chatbot designed to help students quickly access university-related information. The assistant combines **LangGraph**, **Retrieval-Augmented Generation (RAG)**, **Large Language Models (LLMs)**, and a simple **memory system** to provide accurate, context-aware responses.
+The **University Assistant** is an AI-powered chatbot designed to help students quickly access university-related information. The assistant combines **LangGraph**, **Retrieval-Augmented Generation (RAG)**, **Large Language Models (LLMs)**, and a lightweight **memory system** to provide accurate, context-aware responses.
 
 Unlike a traditional chatbot, the assistant retrieves information directly from university policy documents before generating an answer, ensuring that responses are grounded in official university documentation rather than relying solely on the LLM's internal knowledge.
 
-The system also supports memory operations, human approval for sensitive responses, and clarification when user queries are ambiguous.
+The assistant also supports memory operations, human approval for sensitive responses, and clarification when user queries are ambiguous.
 
 ---
 
@@ -74,14 +74,14 @@ The system also supports memory operations, human approval for sensitive respons
 | Technology | Purpose |
 |------------|---------|
 | Python | Programming Language |
-| LangGraph | Workflow orchestration |
+| LangGraph | Workflow Orchestration |
 | LangChain | LLM Framework |
-| Groq API | Large Language Model |
-| Llama 3.3 70B | Language Model |
+| Groq API | LLM Inference |
+| Llama 3.3 70B | Large Language Model |
 | FAISS | Vector Database |
 | FastEmbed | Embedding Model |
 | Markdown | Knowledge Base |
-| dotenv | Environment Variables |
+| python-dotenv | Environment Variable Management |
 
 ---
 
@@ -91,6 +91,7 @@ The system also supports memory operations, human approval for sensitive respons
 UNI-ASSISTANT/
 │
 ├── .env
+├── .gitignore
 ├── README.md
 ├── requirements.txt
 │
@@ -121,13 +122,13 @@ UNI-ASSISTANT/
 
 ## 1. Welcome
 
-The assistant welcomes the user and introduces its capabilities.
+The assistant greets the user and introduces itself before accepting queries.
 
 ---
 
 ## 2. Intent Classification
 
-The user's query is classified into one of the following categories:
+The user's question is classified into one of four categories:
 
 - Greeting
 - RAG Query
@@ -138,16 +139,13 @@ The user's query is classified into one of the following categories:
 
 ## 3. Greeting
 
-Simple greetings receive an immediate conversational response.
+Greeting messages receive a simple conversational response.
 
 ---
 
 ## 4. Memory
 
-The assistant can
-
-- remember information
-- recall previously saved information
+The assistant can store and recall user information.
 
 Example:
 
@@ -165,7 +163,7 @@ What do you remember about me?
 
 ## 5. Document Picker
 
-Instead of searching every document, an LLM first selects the university documents most relevant to the user's question.
+An LLM determines which university documents are most relevant to the user's question before retrieval begins.
 
 Available documents include:
 
@@ -182,68 +180,64 @@ Available documents include:
 
 The selected documents are:
 
-- loaded
-- split into chunks
-- embedded using FastEmbed
-- indexed with FAISS
-- searched using semantic similarity
+- Loaded
+- Split into chunks
+- Embedded using FastEmbed
+- Indexed with FAISS
+- Retrieved using semantic similarity search
 
-Only the retrieved document chunks are provided to the language model.
+Only the retrieved document chunks are supplied to the language model.
 
 ---
 
 ## 7. Answer Generation
 
-The LLM generates a response using only the retrieved document context.
+The LLM generates an answer using **only** the retrieved document context.
 
-The assistant does not invent information beyond the supplied documents.
-
-Each answer includes the source document(s).
+Each answer also includes the document(s) used as sources.
 
 ---
 
 ## 8. Human Review
 
-Certain responses require human approval.
+Sensitive or uncertain responses are sent for human approval.
 
 Examples include:
 
-- questions requesting permission
-- personal academic decisions
-- low-confidence retrieval
-- missing information
+- Permission requests
+- Personal academic decisions
+- Low-confidence retrieval
+- Missing information
 
-The reviewer can:
+The reviewer may:
 
-- approve
-- edit
-- reject
+- Approve
+- Edit
+- Reject
 
-the generated response before it is shown to the user.
+before the answer is returned to the user.
 
 ---
 
 ## 9. Clarification
 
-If the assistant cannot determine the user's intent or retrieve sufficient information, it requests clarification instead of guessing.
+If the assistant cannot determine the user's intent or retrieve sufficient information, it asks the user to clarify their question instead of guessing.
 
 ---
 
 # Memory System
 
-The assistant maintains a lightweight memory stored in:
+User memories are stored in:
 
 ```
 memory.json
 ```
 
-Unlike previous implementations, new memories are appended instead of overwriting existing ones.
+New memories are appended, ensuring previous information is preserved.
 
 ---
 
 # Retrieval Pipeline
-
-The retrieval pipeline consists of:
 
 ```
 User Question
@@ -258,7 +252,7 @@ Selected Documents
 Text Splitter
       │
       ▼
-Embeddings
+FastEmbed Embeddings
       │
       ▼
 FAISS Vector Store
@@ -270,50 +264,51 @@ Similarity Search
 Retrieved Chunks
       │
       ▼
-LLM
+Groq LLM
       │
       ▼
-Answer
+Generated Answer
 ```
 
 ---
 
-# Running the Project
+# Prerequisites
 
-## 1. Clone the repository
+Before running the project, ensure you have:
+
+- Python 3.10 or newer
+- A Groq API key
+- Internet connection (for Groq API)
+
+---
+
+# Installation
+
+Clone the repository:
 
 ```bash
 git clone <repository-url>
 ```
 
----
-
-## 2. Install dependencies
+Move into the project directory:
 
 ```bash
-pip install -r requirements.txt
+cd UNI-ASSISTANT
 ```
 
-or
+Install all required packages:
 
 ```bash
-py -m pip install \
-langgraph \
-langchain \
-langchain-core \
-langchain-community \
-langchain-groq \
-langchain-text-splitters \
-langchain-huggingface \
-faiss-cpu \
-fastembed \
-sentence-transformers \
-python-dotenv
+py -m pip install -r requirements.txt
 ```
 
 ---
 
-## 3. Create a `.env` file
+# Environment Variables
+
+Create a file named `.env` in the project root.
+
+Add your Groq API key:
 
 ```
 GROQ_API_KEY=your_groq_api_key_here
@@ -321,7 +316,15 @@ GROQ_API_KEY=your_groq_api_key_here
 
 ---
 
-## 4. Run
+# Running the Project
+
+Move into the pipeline directory:
+
+```bash
+cd code_pipeline
+```
+
+Run:
 
 ```bash
 py main.py
@@ -331,63 +334,49 @@ py main.py
 
 # Example Queries
 
-Greeting
+### Greeting
 
 ```
 Hello
 ```
 
----
-
-Policy Question
+### Attendance
 
 ```
 What is the attendance policy?
 ```
 
----
-
-Calendar
+### Academic Calendar
 
 ```
-When are final exams?
+When are the final examinations?
 ```
 
----
-
-Memory
+### Memory
 
 ```
 Remember I am a Computer Science student.
 ```
 
----
-
-Recall Memory
+### Recall Memory
 
 ```
 What do you remember about me?
 ```
 
----
-
-Hostel
+### Hostel
 
 ```
 Can first-year students live off campus?
 ```
 
----
-
-Laboratory
+### Laboratory
 
 ```
-What happens if I damage lab equipment?
+What happens if I damage laboratory equipment?
 ```
 
----
-
-Unknown Query
+### Unknown Query
 
 ```
 asdfghjkl
@@ -397,24 +386,29 @@ asdfghjkl
 
 # Future Improvements
 
-- Persistent FAISS vector database
-- Conversation memory using LangGraph Memory
+- Persistent FAISS index
 - Multi-turn conversations
-- Web interface (Streamlit or Gradio)
-- Authentication
-- Database-backed memory
-- Hybrid retrieval
+- LangGraph Memory integration
+- Hybrid Retrieval
 - Confidence scoring
 - Multi-document reasoning
-- PDF support
+- PDF and DOCX support
+- Streamlit or Gradio web interface
+- Authentication system
 - Administrative dashboard
 
 ---
 
 # Author
 
-**Muhammad Imran**
+**Muhammad Ahmed Imran**
 
-University AI Assistant Project
+University Assistant Project
 
-Built using **Python**, **LangGraph**, **LangChain**, **Groq**, and **Retrieval-Augmented Generation (RAG)**.
+Built using **Python**, **LangGraph**, **LangChain**, **Groq**, **FAISS**, and **Retrieval-Augmented Generation (RAG)**.
+
+---
+
+# License
+
+This project was developed for educational purposes as part of a university assignment.
