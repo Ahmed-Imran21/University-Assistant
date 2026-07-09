@@ -75,11 +75,6 @@ builder.add_node(
 )
 
 builder.add_node(
-    "human_review",
-    human_review_node
-)
-
-builder.add_node(
     "final_answer",
     final_node
 )
@@ -159,18 +154,9 @@ builder.add_conditional_edges(
     "review_decision",
     review_router,
     {
-        "review": "human_review",
+        "review": END,
         "final": "final_answer",
     }
-)
-
-# ------------------------------------------------------------
-# Human Review
-# ------------------------------------------------------------
-
-builder.add_edge(
-    "human_review",
-    "final_answer"
 )
 
 # ------------------------------------------------------------
@@ -195,10 +181,3 @@ graph = builder.compile()
 if __name__ == "__main__":
 
     print(graph.get_graph().draw_ascii())
-
-    # If you have pygraphviz installed:
-    #
-    # png = graph.get_graph().draw_mermaid_png()
-    #
-    # with open("graph.png", "wb") as f:
-    #     f.write(png)

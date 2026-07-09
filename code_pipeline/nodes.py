@@ -487,16 +487,9 @@ def human_review_node(state: GraphState):
 # ============================================================
 
 def final_node(state: GraphState):
-
-    print("\n")
-    print("=" * 60)
-    print("FINAL ANSWER")
-    print("=" * 60)
-    print()
-
-    print(state["answer"])
-
-    print()
-    print("=" * 60)
+    """
+    Final node of the graph.
+    Simply returns the final state.
+    """
 
     return state
